@@ -1,4 +1,4 @@
-package org.example;
+package org.example.model;
 
 import org.apache.poi.ss.formula.functions.T;
 

@@ -1,11 +1,13 @@
-package org.example;
+package org.example.service;
 
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.example.model.MyValue;
+import org.example.repository.MyData;
+import org.example.model.Person;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -20,7 +22,7 @@ public class WriteFile {
         XSSFSheet[] sheet = new XSSFSheet[5];
 
 
-        List<MyValue> myValues = myData.getDuplicates();
+        List<MyValue> myValues = myData.getDuplicateData();
 
         //Blank workbook
         workbook = new XSSFWorkbook();
@@ -41,7 +43,7 @@ public class WriteFile {
         for (int k = 0; k < 2; k++) {
             // myValues = k == 0 ? myValues : (List<MyValue>) myData.getDataMap().values();
             int j, i = 2;
-            for (MyValue v : k == 0 ? myValues : myData.getDataMap().values()) {
+            for (MyValue v : k == 0 ? myValues : myData.getNormalData().values()) {
                 Person p = v.getPerson();
                 Object[] objects = new Object[20];
                 objects[0] = i - 1;
@@ -87,7 +89,7 @@ public class WriteFile {
             int rowN = 0;
             row = sheet[i].createRow(rownum);
             row.createCell(rowN++).setCellValue("Нийт бичлэг");
-            row.createCell(rowN).setCellValue(i == 0 ? myValues.size() : myData.getDataMap().size());
+            row.createCell(rowN).setCellValue(i == 0 ? myValues.size() : myData.getNormalData().size());
 
         }
 

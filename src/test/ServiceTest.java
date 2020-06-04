@@ -1,6 +1,6 @@
 package test;
 
-import org.example.Service;
+import org.example.service.Service;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

@@ -1,21 +1,24 @@
-package org.example;
+package org.example.repository;
+
+import org.example.model.Person;
+import org.example.utils.MyComparator;
+import org.example.model.MyValue;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
 public final class MyData {
     //Map<"actual value", MyKey=(Register, FileName)>
-    private final HashMap<Person, MyValue> dataMap;
+    private final HashMap<Person, MyValue> normalData;
 //    private HashMap<Person, MyValue> duplicates;
-    private final List<MyValue> duplicates;
+    private final List<MyValue> duplicateData;
 
     private static MyData INSTANCE;
 
-    private MyData(HashMap<Person, MyValue> dataMap, List<MyValue> duplicates) {
-        this.dataMap = dataMap;
-        this.duplicates = duplicates;
+    private MyData(HashMap<Person, MyValue> normalData, List<MyValue> duplicateData) {
+        this.normalData = normalData;
+        this.duplicateData = duplicateData;
     }
 
     public static MyData getInstance() {
@@ -24,8 +27,8 @@ public final class MyData {
         return INSTANCE;
     }
 
-    public HashMap<Person, MyValue> getDataMap() {
-        return dataMap;
+    public HashMap<Person, MyValue> getNormalData() {
+        return normalData;
     }
 
 //    public void setDataMap(HashMap<Person, MyValue> dataMap) {
@@ -36,10 +39,10 @@ public final class MyData {
 //        this.duplicates = duplicates;
 //    }
 
-    public List<MyValue> getDuplicates() {
-        return duplicates;
+    public List<MyValue> getDuplicateData() {
+        return duplicateData;
     }
     public void mySort(){
-        duplicates.sort(new MyComparator());
+        duplicateData.sort(new MyComparator());
     }
 }

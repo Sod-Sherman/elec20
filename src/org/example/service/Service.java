@@ -1,10 +1,14 @@
-package org.example;
+package org.example.service;
 
 import org.apache.poi.ss.usermodel.Sheet;
+import org.example.model.MyValue;
+import org.example.repository.MyData;
+import org.example.model.Person;
+import org.example.utils.MyExcel;
+import org.example.utils.MyFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -26,13 +30,13 @@ public class Service {
     }
 
     public void printDuplicatePerson() {
-        System.out.println("Duplicated records: -----> " + myData.getDuplicates());
-        System.out.println("Total duplicated person number: " + myData.getDuplicates().size());
+        System.out.println("Duplicated records: -----> " + myData.getDuplicateData());
+        System.out.println("Total duplicated person number: " + myData.getDuplicateData().size());
     }
 
     public void printExtraOrdinaryPerson() {
 //        System.out.println("printExtraOrdinaryPerson = " + myData.getDataMap());
-        System.out.println("Total extra ordinary person number: " + myData.getDataMap().size());
+        System.out.println("Total extra ordinary person number: " + myData.getNormalData().size());
     }
 
     public void readFilesInFolder(Service myService) throws IOException {
@@ -57,7 +61,7 @@ public class Service {
     public void generateDataSet(File file)
             throws IOException {
 
-        HashMap<Person, MyValue> dataMap = myData.getDataMap();
+        HashMap<Person, MyValue> dataMap = myData.getNormalData();
         Person person;
         MyExcel myExcel = new MyExcel(file);
         Sheet sht = myExcel.getSht();
@@ -86,8 +90,8 @@ public class Service {
                 myValue = dataMap.get(person);
                 myValue.incrementDuplicateCounter();
                 myValue.addFileName(file.getName());
-                myData.getDuplicates().add(person.getMyValue());
-                myData.getDuplicates().add(dataMap.get(person));
+                myData.getDuplicateData().add(person.getMyValue());
+                myData.getDuplicateData().add(dataMap.get(person));
                 dataMap.remove(person);
 
             } else {
