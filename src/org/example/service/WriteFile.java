@@ -5,6 +5,7 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.example.Constants;
 import org.example.model.MyValue;
 import org.example.repository.MyData;
 import org.example.model.Person;
@@ -38,12 +39,12 @@ public class WriteFile {
         }
 
 
-        data.get(0).put(1, new Object[]{"ID", "Ургийн овог", "Овог", "Нэр", "Утас", "Хаяг", "Регистр", "Нам", "Оруулагч", "Файлын нэр", "Давхцалт"});
-        data.get(1).put(1, new Object[]{"ID", "Ургийн овог", "Овог", "Нэр", "Утас", "Хаяг", "Регистр", "Нам", "Оруулагч", "Файлын нэр"});
+        data.get(0).put(1, new Object[]{"ID", "Ургийн овог", "Овог", "Нэр", "Утас", "Хаяг", "Регистр", "Нам", "Давхцалт", "Оруулагч", "Файлын нэр"});
+        data.get(1).put(1, new Object[]{"ID", "Ургийн овог", "Овог", "Нэр", "Утас", "Хаяг", "Регистр", "Нам", "Давхцалт", "Оруулагч", "Файлын нэр"});
         for (int k = 0; k < 2; k++) {
             // myValues = k == 0 ? myValues : (List<MyValue>) myData.getDataMap().values();
             int j, i = 2;
-            for (MyValue v : k == 0 ? myValues : myData.getNormalData().values()) {
+            for (MyValue v : k == 0 ? myValues : myData.getNormalData()) {
                 Person p = v.getPerson();
                 Object[] objects = new Object[20];
                 objects[0] = i - 1;
@@ -55,12 +56,12 @@ public class WriteFile {
                 objects[j++] = p.getAddress();
                 objects[j++] = p.getRegisterNum();
                 objects[j++] = p.getParty();
+//                objects[j++] = k == 0 ? v.getDuplicateCounter() : "";
+                objects[j++] = p.getMyValue().getDuplicateCounter();
                 objects[j++] = p.getOruulagch();
-                for (String s : v.getFileNames()) {
+                for (String s : p.getMyValue().getFileNames()) {
                     objects[j++] = s;
                 }
-                objects[j] = k == 0 ? v.getDuplicateCounter() : "";
-
 
                 data.get(k).put(i++, objects);
             }
@@ -86,10 +87,19 @@ public class WriteFile {
                         cell.setCellValue((Integer) obj);
                 }
             }
+
+            Map<String, Long> map = getPartyReport(i == 0 ? myValues :  myData.getNormalData());
             int rowN = 0;
-            row = sheet[i].createRow(rownum);
+            row = sheet[i].createRow(rownum++);
             row.createCell(rowN++).setCellValue("Нийт бичлэг");
-            row.createCell(rowN).setCellValue(i == 0 ? myValues.size() : myData.getNormalData().size());
+            for (String party : map.keySet())
+                row.createCell(rowN++).setCellValue(party);
+
+            rowN = 0;
+            row = sheet[i].createRow(rownum++);
+            row.createCell(rowN++).setCellValue(i == 0 ? myValues.size() : myData.getNormalData().size());
+            for (Long partyCount : map.values())
+                row.createCell(rowN++).setCellValue(partyCount);
 
         }
 
@@ -105,6 +115,15 @@ public class WriteFile {
             out.close();
         }
     }
+
+    private static Map<String, Long> getPartyReport(List<MyValue> myValues) {
+        Map<String, Long> map = new HashMap<>();
+        for (String party : Constants.getPARTIES()) {
+            map.put(party, myValues.stream().filter(f -> f.getPerson().getParty().equalsIgnoreCase(party)).count());
+        }
+        return map;
+    }
+
 
     private static void generateObjectArray(List<Map<Integer, Object[]>> data, List<MyValue> myValues) {
 

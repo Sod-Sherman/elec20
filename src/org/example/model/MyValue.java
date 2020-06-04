@@ -2,10 +2,11 @@ package org.example.model;
 
 import org.apache.poi.ss.formula.functions.T;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-public class MyValue implements Comparable<T> {
+public class MyValue implements Serializable {
     private Person person;
     private final Set<String> fileNames;
     private int duplicateCounter;
@@ -49,10 +50,4 @@ public class MyValue implements Comparable<T> {
                 "}\n";
     }
 
-
-
-    @Override
-    public int compareTo(T o) {
-        return 0;
-    }
 }

@@ -1,5 +1,6 @@
 package org.example.utils;
 
+import org.example.repository.MyData;
 import org.example.service.Service;
 
 import java.io.File;
@@ -9,15 +10,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MyFile {
-    private List<File> filesInFolder = new LinkedList<>();
+    private final List<File> filesInFolder = new LinkedList<>();
     private List<File> outputFiles = new LinkedList<>();
-    private Service myService;
 
     public void readFiles(Service myService) throws IOException {
-        this.myService = myService;
-                Files.walk(Paths.get("input"))
+        MyData myData = MyData.getInstance();
+        Files.walk(Paths.get("input"))
                 .filter(Files::isRegularFile)
                 .map(Path::toFile)
                 .forEach(file -> {
@@ -29,8 +30,7 @@ public class MyFile {
                         e.printStackTrace();
                     }
                 });
-
-
+        myData.getNormalData().addAll(myData.getRawData().values().stream().filter(f -> f.getDuplicateCounter() == 0).collect(Collectors.toList()));
     }
 
     public List<File> getFilesInFolder() {
@@ -46,10 +46,6 @@ public class MyFile {
     }
 
     public void printFilesInFolder() {
-        if (filesInFolder == null) {
-            System.out.println("No Files~!!");
-            return;
-        }
         System.out.println("Total files list (Нийт файл жагсаалт): ");
         int c = 0;
         for (File file : filesInFolder) {
